@@ -11,8 +11,7 @@ int main(int argc, char* args[])
 
 	Camera cam;
 	sam.AddHandlerClass(cam, 5);
-	ImGuiHandler imgui;
-	sam.AddHandlerClass(imgui, 10);
+	sam.AddStaticHandlerClass<ImGuiHandler>(10);
 
 	eltecg::ogl::ArrayBuffer MyVBO;
 	MyVBO.constructMutable(std::vector<glm::vec2>{ {-1, -1}, { 1, -1 }, { 0, 1 }}, GL_STATIC_DRAW);
