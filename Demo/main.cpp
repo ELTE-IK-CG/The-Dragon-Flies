@@ -28,12 +28,14 @@ int main(int argc, char* args[])
 
 	ShaderProgramEditorVF program = "MyShaderProgram";
 	program << "Shaders/vert.vert"_vs << "Shaders/frag.frag"_fs << LinkProgram;
-	
 	ShaderProgramEditorVF postprocess = "Postprocess shader program";
 	postprocess << "Shaders/postprocess.vert"_vs << "Shaders/postprocess.frag"_fs << LinkProgram;
 
-	auto frameBuff = EmptyFBO() + Texture2D<>(Backbuffer.getWidth(), Backbuffer.getHeight(), 1) + Renderbuffer<depth24>(Backbuffer.getWidth(), Backbuffer.getHeight());
+	auto frameBuff = Renderbuffer<depth24>(Backbuffer.getWidth(), Backbuffer.getHeight()) + Texture2D<>(Backbuffer.getWidth(), Backbuffer.getHeight(), 1);
 
+	sam.AddHandlerClass(Backbuffer);
+	sam.AddResize([&](int w, int h) {frameBuff = frameBuff.MakeResized(w, h); });
+	
 	GL_CHECK; //extra opengl error checking in GPU Debug build configuration
 
 	sam.Run([&](float deltaTime)
@@ -43,7 +45,7 @@ int main(int argc, char* args[])
 			frameBuff << ClearColor<0>(0.f, 0.1f, 0.5f) << ClearDepth() << program << "texImg" << testTex;
 			program << demoVao;	//Rendering: Ensures that both the vao and program is attached
 
-			Backbuffer << ClearColor(0.f, 0.1f, 0.5f) << ClearDepth() << postprocess << "texFrame" << frameBuff.get<0>();
+			Backbuffer << ClearColor(0.f, 0.1f, 0.5f) << ClearDepth() << postprocess << "texFrame" << frameBuff.getColor<0>();
 			postprocess << noVao;
 
 			GL_CHECK;
