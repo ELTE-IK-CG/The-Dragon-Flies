@@ -5,52 +5,50 @@
 #include <GL/glew.h>
 #include <vector>
 
-using namespace df;
 
 int main(int argc, char* args[])
 {
+	df::Camera cam;
 	Sample sam; //handles Events and such
-	Camera cam;
 	sam.AddHandlerClass(cam, 5);
-	sam.AddStaticHandlerClass<ImGuiHandler>(10);
+	sam.AddStaticHandlerClass<df::ImGuiHandler>(10);
 
-	eltecg::ogl::ArrayBuffer MyVBO;
-	MyVBO.constructMutable(std::vector<glm::vec2>{ {-1, -1}, { 1, -1 }, { 0, 1 }}, GL_STATIC_DRAW);
+	eltecg::ogl::ArrayBuffer MyVBO;	MyVBO.constructMutable(std::vector<glm::vec2>{ {-1, -1}, { 1, -1 }, { 0, 1 }}, GL_STATIC_DRAW);
+	eltecg::ogl::VertexArray MyVAO;	MyVAO.addVBO<glm::vec2>(MyVBO);
 
-	eltecg::ogl::VertexArray MyVAO;
-	MyVAO.addVBO<glm::vec2>(MyVBO);
-
-	VaoArrays demoVao((GLuint)MyVAO, GL_TRIANGLE_STRIP, 3, 0u); // temporary solution
-	NoVao noVao = NoVao(GL_TRIANGLES, 3);
-
-	TextureCube<> testCubemap("Assets/xpos.png", "Assets/xneg.png", "Assets/ypos.png", "Assets/yneg.png", "Assets/zpos.png", "Assets/zneg.png");
-	Texture2D<> testTex = testCubemap[TextureType::TEX_CUBE_X_POS]; // 2D view of a cubemap face
-
-	ShaderProgramEditorVF program = "MyShaderProgram";
-	program << "Shaders/vert.vert"_vs << "Shaders/frag.frag"_fs << LinkProgram;
-	ShaderProgramEditorVF postprocess = "Postprocess shader program";
-	postprocess << "Shaders/postprocess.vert"_vs << "Shaders/postprocess.frag"_fs << LinkProgram;
-
-	auto frameBuff = Renderbuffer<depth24>(Backbuffer.getWidth(), Backbuffer.getHeight()) + Texture2D<>(Backbuffer.getWidth(), Backbuffer.getHeight(), 1);
-
-	sam.AddHandlerClass(Backbuffer);
-	sam.AddResize([&](int w, int h) {frameBuff = frameBuff.MakeResized(w, h); });
+	df::VaoArrays myMeshVAO((GLuint)MyVAO, GL_TRIANGLE_STRIP, 3, 0u); // temporary solution
 	
-	GL_CHECK; //extra opengl error checking in GPU Debug build configuration
+	auto myTextureFromFile = df::Texture2D<df::u8vec3>("Assets/xpos.png");
+	//auto myCubeMap		   = df::TextureCube<>("xpos.png", "xneg.png", "ypos.png", "yneg.png", "zpos.png", "zneg.png");
+	//auto myTextureView	   = myCubeMap[df::X_POS];
+	
+	df::ShaderProgramEditorVF myMeshProgram = "MyShaderProgram";
+	myMeshProgram << "Shaders/vert.vert"_vert << "Shaders/frag.frag"_frag << df::LinkProgram;
+	df::ShaderProgramEditorVF myPostProcess = "Postprocess shader program";
+	myPostProcess << "Shaders/postprocess.vert"_vert << "Shaders/postprocess.frag"_frag << df::LinkProgram;
+	
+	//auto myMeshProgram = df::Program("Shaders/postprocess.vert"_vert + "Shaders/postprocess.frag"_frag);
+	//auto myPostProcess = df::Program("Shaders/postprocess.vert"_vert + "Shaders/postprocess.frag"_frag);
+	
+	int w = df::Backbuffer.getWidth(), h = df::Backbuffer.getHeight();
+	
+	auto myFramebuffer = df::Texture2D<>(w, h, 1) + df::Renderbuffer<df::depth24>(w, h);
 
+	sam.AddHandlerClass(df::Backbuffer);
+	sam.AddResize([&](int w, int h) {myFramebuffer = myFramebuffer.MakeResized(w, h); });
+	
 	sam.Run([&](float deltaTime)
 		{
 			cam.Update();
 
-			frameBuff << ClearColor<0>(0.f, 0.1f, 0.5f) << ClearDepth() << program << "texImg" << testTex;
-			program << demoVao;	//Rendering: Ensures that both the vao and program is attached
+			myFramebuffer << df::Clear() << myMeshProgram << "myTexUniform" << myTextureFromFile;
+			myMeshProgram << myMeshVAO;
 
-			Backbuffer << ClearColor(0.f, 0.1f, 0.5f) << ClearDepth() << postprocess << "texFrame" << frameBuff.getColor<0>();
-			postprocess << noVao;
-
-			GL_CHECK;
-			program.Render(); //only the UI!!
-			postprocess.Render();
+			df::Backbuffer << df::Clear() << myPostProcess << "myLastRender" << myFramebuffer.getColor<0>();
+			myPostProcess << df::NoVao(GL_TRIANGLES, 3);
+			
+			myMeshProgram.Render(); //only the UI!!
+			myPostProcess.Render();
 		}
 	);
 	return 0;
