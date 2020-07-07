@@ -4,7 +4,10 @@
 
 int main(int argc, char* args[])
 {
-	df::Sample sam; //handles Events and such
+	df::Sample::Settings set;
+	set.initRenderDoc = true;
+	set.launchRenderDoc = true;
+	df::Sample sam("Dragonfly Demo", 720, 480, set); //handles Events and such
 	df::Camera cam;
 	sam.AddHandlerClass(cam, 5);
 	sam.AddStaticHandlerClass<df::ImGuiHandler>(10);
