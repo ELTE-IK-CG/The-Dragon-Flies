@@ -5,14 +5,14 @@ This is a template repository for the Dragonfly framework.
 ## More Information
 
  - [Dragonfly Poster](https://people.inf.elte.hu/csabix/publications/articles/WSPS_2020_Poster_Dragonfly.pdf)
- - [Dragonfly Project](https://github.com/Csabix/Dragonfly)
+ - [Dragonfly Project](https://github.com/ELTE-IK-CG/Dragonfly)
  - Or contact the authors at csabix@inf.elte.hu or bundas@inf.elte.hu
  
 ## Install
 
- - Download the [DragonflyPack.zip](https://drive.google.com/file/d/1Ip1ilcjGu7oTZ3ixYK0olPBVj-89Wr9G/view?usp=sharing)
+ - Download the [DragonflyPack.zip](https://drive.google.com/file/d/1YHrIyQqoi5fef00poe038AW2M7P9rVfB/view?usp=sharing)
  - Find a location and create a virtual T drive, eg.: `subst T: C:\MyT_Drive\`
- - Unzip the `DragonflyPack` there. There should be 3 folders in `T:\DragonflyPack`
+ - Unzip the `DragonflyPack` there. There should be 4 folders in `T:\DragonflyPack`
  - Download Dragonfly as a submodule within the cloned The-Dragon-Flies project
  - Use Visual Studio to build the solution
 
