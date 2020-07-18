@@ -1,16 +1,14 @@
-#include <Dragonfly/editor.h>
+#include <Dragonfly/editor.h>		 //inlcludes most features
 #include <Dragonfly/detail/buffer.h> //will be replaced
-#include <Dragonfly/detail/vao.h> //will be replaced
+#include <Dragonfly/detail/vao.h>	 //will be replaced
 
 int main(int argc, char* args[])
 {
-	df::Sample::Settings set;
-	set.initRenderDoc = true;
-	set.launchRenderDoc = true;
-	df::Sample sam("Dragonfly Demo", 720, 480, set); //handles Events and such
-	df::Camera cam;
-	sam.AddHandlerClass(cam, 5);
-	sam.AddStaticHandlerClass<df::ImGuiHandler>(10);
+	df::Sample sam("Dragonfly Demo", 720, 480, df::Sample::FLAGS::DEFAULT);
+	// df::Sample simplifies OpenGL, SDL, ImGui, RenderDoc in the render loop, and handles user input via callback member functions in priority queues
+	df::Camera cam;								// Implements a camera event class with handles
+	sam.AddHandlerClass(cam, 5);				// class callbacks will be called to change its state
+	sam.AddHandlerClass<df::ImGuiHandler>(10);	// static handle functions only
 
 	eltecg::ogl::ArrayBuffer MyVBO;	MyVBO.constructMutable(std::vector<glm::vec2>{ {-1, -1}, { 1, -1 }, { 0, 1 }}, GL_STATIC_DRAW);
 	eltecg::ogl::VertexArray MyVAO;	MyVAO.addVBO<glm::vec2>(MyVBO);		//these two classes will be removed from Dragonfly as soon as we have the replacement ready
