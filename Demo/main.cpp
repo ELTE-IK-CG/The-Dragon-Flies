@@ -26,9 +26,21 @@ int main(int argc, char* args[])
 	int w = df::Backbuffer.getWidth(), h = df::Backbuffer.getHeight();
 	auto frameBuff = df::Renderbuffer<df::depth24>(w, h) + df::Texture2D<>(w, h, 1);
 
+	sam.AddLogger([&](const df::LogEntry_Vec& logger, uint64_t frame_number_) {
+		std::cout << "--- Frame: " << frame_number_ << std::endl;
+		for (const auto& asd : logger)
+			std::cout << asd.message << std::endl;
+		});
 	sam.AddResize([&](int w, int h) {frameBuff = frameBuff.MakeResized(w, h); });
 	
 	GL_CHECK; //extra opengl error checking in GPU Debug build configuration
+
+	df::Logger.AddEntry(df::detail::Logger::Entry(
+		df::detail::Logger::Entry::SEVERITY::INFO,
+		df::detail::Logger::Entry::Location{ "path",12 },
+		"expr", "Testing if Logger works.",
+		df::detail::Logger::Entry::TYPE::USER
+	));
 
 	sam.Run([&](float deltaTime) //delta time in ms
 		{
