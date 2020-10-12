@@ -1,6 +1,9 @@
 #include <Dragonfly/editor.h>		 //inlcludes most features
 #include <Dragonfly/detail/buffer.h> //will be replaced
 #include <Dragonfly/detail/vao.h>	 //will be replaced
+#include <Dragonfly/detail/FileIO/FileIO.h>
+
+#include <string>
 
 int main(int argc, char* args[])
 {
@@ -26,21 +29,174 @@ int main(int argc, char* args[])
 	int w = df::Backbuffer.getWidth(), h = df::Backbuffer.getHeight();
 	auto frameBuff = df::Renderbuffer<df::depth24>(w, h) + df::Texture2D<>(w, h, 1);
 
-	sam.AddLogger([&](const df::LogEntry_Vec& logger, uint64_t frame_number_) {
-		std::cout << "--- Frame: " << frame_number_ << std::endl;
-		for (const auto& asd : logger)
-			std::cout << asd.message << std::endl;
-		});
+	//sam.AddLogger([&](const df::LogEntry_Vec& logger, uint64_t frame_number_) {
+	//	std::cout << "--- Frame: " << frame_number_ << std::endl;
+	//	for (const auto& asd : logger)
+	//		std::cout << asd.message << std::endl;
+	//	});
 	sam.AddResize([&](int w, int h) {frameBuff = frameBuff.MakeResized(w, h); });
-	
+
 	GL_CHECK; //extra opengl error checking in GPU Debug build configuration
 
-	df::Logger.AddEntry(df::detail::Logger::Entry(
-		df::detail::Logger::Entry::SEVERITY::INFO,
-		df::detail::Logger::Entry::Location{ "path",12 },
-		"expr", "Testing if Logger works.",
-		df::detail::Logger::Entry::TYPE::USER
-	));
+	//df::Logger.AddEntry(df::detail::Logger::Entry(
+	//	df::detail::Logger::Entry::SEVERITY::INFO,
+	//	df::detail::Logger::Entry::Location{ "path",12 },
+	//	"expr", "Testing if Logger works.",
+	//	df::detail::Logger::Entry::TYPE::USER
+	//));
+
+
+
+
+
+	//// Shaders
+	//std::string asd;
+
+
+	///*
+	//=========================================================
+	//                                    Shader source
+	//=========================================================
+	//*/
+
+	//std::string code = my_code_generation();
+
+
+	//auto /*df::detail::ShaderSource*/ source = "#version 430\n"_code + "uniform vec3 color;\n"_code + "shaders/vs/file.h"_file;
+	//auto /*df::detail::VertexShaderSource*/ vs_sourcelist1 = "file1"_vs + "file2"_vs;
+	//vs_sourcelist1.SetPath("shaders/vs/");
+	//auto /*df::detail::VertexShaderSource*/ vs_sourcelist2 = "#define DEBUG"_code + "file1"_vs + Code(code);
+	//// Cannot add different typed shader sources
+	//// Only list of sources, files are yet to be read/loaded 	
+
+	//auto shade_source = "shade.glsl"_forceLoad; // { {FILE, "file path", "source"}	} <- loaded file / file path / string
+	//auto half_source = "#define PI 3"_code + "trace.glsl"_fs + shade_source;
+
+	//auto full_source = "#define RELEASE"_code + half_source;
+	//auto full_source = "#define DEBUG"_code + half_source;
+
+	///*
+	//=========================================================
+	//                                    (Pre)compiled Shader
+	//=========================================================
+	//*/
+
+
+	//auto /*VertexShader*/ compiledVS = MakeShader("#define RELEASE"_code + vs_sourcelist1);
+	//auto /*VertexShader*/ compiledVS = VertexShader("#define RELEASE"_code + vs_sourcelist1); //equivalent
+	//// cannot add compiled shaders togather
+
+
+	///*
+	//=========================================================
+	//                                        Program
+	//=========================================================
+	//*/
+
+
+	//auto myProg = MakeProgram("vs.vert"_vs, "fs.frag"_fs + "fs.frag"_fs);
+	//auto myProg = MakeProgram(compiledVS, "fs.frag"_fs + "fs.frag"_fs);
+	//// MakeProgram should have a counter for each shader. Valid programs:
+	//        // (a single) compute shader or
+	//        // vs + [tc + te] + [geom] + fs
+	//        // in any order seperated by commas
+
+	//// Constructors
+	//auto myVs = MakeVertexShader("vert.glsl"_file); // Read from file
+	//auto myFs = MakeFragmentShaderEditor("vert.hlsl"_file, "long code"); // For code generation
+
+
+	//auto vs1 = "file1"_vsfile;
+	//auto vs2 = "file2"_vsfile;
+
+	//auto fs = MakeShader("file"_fsfile);
+
+	////fs.Compile();
+
+	//auto fixvs = vs1 + vs2;
+
+	//vector programs;
+	//for (auto asd : asd) {
+	//    auto tempvs = vs(asd);
+	//    programs.pushback(program(vs1 + vs2 + tempvs + fs))
+	//        programs.pushback(program(fixvs + tempvs + fs))
+	//}
+
+
+
+	//auto vs = "file.vs"_vsfile;
+
+	///*
+	//Program
+	//*/
+
+	//// Constructors
+	//auto myProg1 = myVs + MakeFragmentShader("vert.hlsl"_file, "another generated code"); //none of the shaders are editors
+	//auto myProg2 = myVs + myFs;   	// one is an editor --> this promotes myProg2 to an Editor as well so you can do the following from UI
+	//        // Program Editor UI
+	//        // - Compile, link, error list
+	//        // - Uniform view: Buffers, Textures, and Subroutines
+
+
+	//// Rendering the UI:
+	//// Old way: myFs.RenderUI(); //renders the generated UI
+	//// Each program editor is added to a global list
+	//// The EditorsEventHandler renders each ProgramEditor within the global list when added to Sample sam.
+
+	//myProg["myUbo"]["view"] = glm::mat4(1);
+
+	//df::Buffer<glm::vec3, float> buff;
+
+	//auto vao = buff + buff;
+
+	//myProg["myUbo"] = buff;
+
+	//myProg << "myUbo" << buff;
+
+
+	///**/
+
+	const std::string path = "input.txt";
+
+	{
+		df::detail::FileIO mfile(path);
+		std::string copied_version = mfile.GetContent();
+
+		copied_version += "\n New Line 1 \n";
+		mfile.SetContent(copied_version);
+		mfile.Save();
+	}
+
+	{
+		df::detail::FileCache mcache;
+		{
+			auto& mfile = mcache.AddFile(path); //disable copy???
+			std::string copied_version = mfile.GetContent();
+			copied_version += "\n New Line 2 \n";
+			mfile.SetContent(copied_version);
+			mfile.Save();
+		}
+		
+		size_t id = df::detail::FileCache::GetHashValue(path);
+
+		{
+			auto& mfile = mcache.AddFile(path); //should not create a new
+			std::string copied_version = mfile.GetContent();
+			copied_version += "\n New Line 3 \n";
+			mfile.SetContent(copied_version);
+			mfile.Save();
+		}
+
+		{
+			auto& mfile = mcache.GetFile(id); //disable copy???
+			std::string copied_version = mfile.GetContent();
+			copied_version += "\n New Line 4 \n";
+			mfile.SetContent(copied_version);
+			mfile.Save();
+		}
+
+	}
+
 
 	sam.Run([&](float deltaTime) //delta time in ms
 		{
