@@ -47,41 +47,35 @@
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="Dragonfly.props" />
+	<Import Project="$(SolutionDir)Dragonfly\Framework\Dragonfly.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'" Label="PropertySheets">
-    <Import Project="Dragonfly.props" />
+	<Import Project="$(SolutionDir)Dragonfly\Framework\Dragonfly.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="Dragonfly.props" />
+	<Import Project="$(SolutionDir)Dragonfly\Framework\Dragonfly.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerEnvironment>PATH=T:\DragonflyPack\LibBin;$(RenderdocPath);%PATH%</LocalDebuggerEnvironment>
-    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
-    <LocalDebuggerEnvironment>PATH=T:\DragonflyPack\LibBin;$(RenderdocPath);%PATH%</LocalDebuggerEnvironment>
-    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerEnvironment>PATH=T:\DragonflyPack\LibBin;$(RenderdocPath);%PATH%</LocalDebuggerEnvironment>
-    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-  </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>T:\DragonflyPack\LibBin;$(SolutionDir)Dragonfly\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>T:\DragonflyPack\includes;$(SolutionDir)Dragonfly\include;$(IncludePath)</IncludePath>
+    <LocalDebuggerEnvironment>PATH=$(DragonflyPackPath)\LibBin;$(RenderdocPath);%PATH%</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LibraryPath>$(DragonflyPackPath)\LibBin;$(SolutionDir)Dragonfly\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DragonflyPackPath)\includes;$(SolutionDir)Dragonfly\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GPU Debug|x64'">
-    <LibraryPath>T:\DragonflyPack\LibBin;$(SolutionDir)Dragonfly\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>T:\DragonflyPack\includes;$(SolutionDir)Dragonfly\include;$(IncludePath)</IncludePath>
+    <LocalDebuggerEnvironment>PATH=$(DragonflyPackPath)\LibBin;$(RenderdocPath);%PATH%</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LibraryPath>$(DragonflyPackPath)\LibBin;$(SolutionDir)Dragonfly\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DragonflyPackPath)\includes;$(SolutionDir)Dragonfly\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>T:\DragonflyPack\LibBin;$(SolutionDir)Dragonfly\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>T:\DragonflyPack\includes;$(SolutionDir)Dragonfly\include;$(IncludePath)</IncludePath>
+    <LocalDebuggerEnvironment>PATH=$(DragonflyPackPath)\LibBin;$(RenderdocPath);%PATH%</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LibraryPath>$(DragonflyPackPath)\LibBin;$(SolutionDir)Dragonfly\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DragonflyPackPath)\includes;$(SolutionDir)Dragonfly\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
