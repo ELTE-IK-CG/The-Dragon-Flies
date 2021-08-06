@@ -3,6 +3,8 @@
 #include <Dragonfly/detail/vao.h>	 //will be replaced
 #include <Dragonfly/detail/FileIO/FileIO.h>
 
+#include <Dragonfly/detail/Buffer/UniformBuffer.h>
+
 #include <string>
 
 int main(int argc, char* args[])
@@ -145,6 +147,7 @@ int main(int argc, char* args[])
 
 	//myProg["myUbo"]["view"] = glm::mat4(1);
 
+	//myProg[]
 	//df::Buffer<glm::vec3, float> buff;
 
 	//auto vao = buff + buff;
@@ -156,50 +159,37 @@ int main(int argc, char* args[])
 
 	///**/
 
-	const std::string path = "input.txt";
 
-	{
-		df::detail::FileIO mfile(path);
-		std::string copied_version = mfile.GetContent();
+	program << "texImg" << testTex;
+	GLint progID;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &progID);
+	
+	auto [ubo_layouts, unbuffered] = programParseUniformProperties(progID);
 
-		copied_version += "\n New Line 1 \n";
-		mfile.SetContent(copied_version);
-		mfile.Save();
-	}
-
-	{
-		df::detail::FileCache mcache;
-		{
-			auto& mfile = mcache.AddFile(path); //disable copy???
-			std::string copied_version = mfile.GetContent();
-			copied_version += "\n New Line 2 \n";
-			mfile.SetContent(copied_version);
-			mfile.Save();
-		}
-		
-		size_t id = df::detail::FileCache::GetHashValue(path);
-
-		{
-			auto& mfile = mcache.AddFile(path); //should not create a new
-			std::string copied_version = mfile.GetContent();
-			copied_version += "\n New Line 3 \n";
-			mfile.SetContent(copied_version);
-			mfile.Save();
-		}
-
-		{
-			auto& mfile = mcache.GetFile(id); //disable copy???
-			std::string copied_version = mfile.GetContent();
-			copied_version += "\n New Line 4 \n";
-			mfile.SetContent(copied_version);
-			mfile.Save();
-		}
-
-	}
-
-
+	auto asd = ubo_layouts.find("MyBlock");
+	
+	df::UniformBuffer ubo{asd->second};
+	ubo.Bind(3); //binding point
+	glUniformBlockBinding(progID, 0, 3);
+	
+	glm::vec3 color(1,1,0);
+	float f1 = 0;
+	ubo["v"] = color;
+	ubo["f1"] = f1;
+	ubo.UploadBuffer();
+	
 	sam.Run([&](float deltaTime) //delta time in ms
 		{
+			if(ImGui::ColorEdit3("color", &color[0])){
+				ubo["v"] = color;
+				ubo.UploadBuffer();
+			}
+			if(ImGui::SliderFloat("f1mix",&f1,0,1))
+			{
+				ubo["f1"] = f1;
+				ubo.UploadBuffer();
+			}
+		
 			cam.Update();
 
 			frameBuff << df::Clear() << program << "texImg" << testTex;

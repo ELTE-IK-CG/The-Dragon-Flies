@@ -1,4 +1,4 @@
-#version 410
+#version 450
 
 in vec2 vs_in_pos;
 
