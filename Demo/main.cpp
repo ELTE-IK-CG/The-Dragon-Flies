@@ -25,8 +25,10 @@ int main(int argc, char* args[])
 
 	df::ShaderProgramEditorVF program = "MyShaderProgram";
 	program << "Shaders/vert.vert"_vert << "Shaders/frag.frag"_frag << df::LinkProgram;
+	std::cout << program.GetErrors() << std::endl;
 	df::ShaderProgramEditorVF postprocess = "Postprocess shader program";
 	postprocess << "Shaders/postprocess.vert"_vert << "Shaders/postprocess.frag"_frag << df::LinkProgram;
+	std::cout << postprocess.GetErrors() << std::endl;
 
 	int w = df::Backbuffer.getWidth(), h = df::Backbuffer.getHeight();
 	auto frameBuff = df::Renderbuffer<df::depth24>(w, h) + df::Texture2D<>(w, h, 1);
@@ -172,23 +174,17 @@ int main(int argc, char* args[])
 	ubo.Bind(3); //binding point
 	glUniformBlockBinding(progID, 0, 3);
 	
-	glm::vec3 color(1,1,0);
-	float f1 = 0;
-	ubo["v"] = color;
-	ubo["f1"] = f1;
+	ubo["v"] = glm::vec3(1,1,0);
+	ubo["f1"] = 0.0f;
 	ubo.UploadBuffer();
 	
 	sam.Run([&](float deltaTime) //delta time in ms
 		{
-			if(ImGui::ColorEdit3("color", &color[0])){
-				ubo["v"] = color;
+			bool uboChanged = false;
+			uboChanged |= ImGui::ColorEdit3("color", ubo["v"].Get<float>());
+			uboChanged |= ImGui::SliderFloat("f1mix",ubo["f1"].Get<float>(),0,1);
+			if(uboChanged)
 				ubo.UploadBuffer();
-			}
-			if(ImGui::SliderFloat("f1mix",&f1,0,1))
-			{
-				ubo["f1"] = f1;
-				ubo.UploadBuffer();
-			}
 		
 			cam.Update();
 
